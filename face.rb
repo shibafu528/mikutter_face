@@ -22,7 +22,23 @@ module Plugin::Face
       RUBY
     end
   end
+
+  module DivaModelExtension
+    refine Diva::Model do
+      def suitable_face
+        if from_me?
+          :myself
+        elsif to_me?
+          :mention
+        else
+          :basic_message
+        end
+      end
+    end
+  end
 end
+
+using Plugin::Face::DivaModelExtension
 
 Plugin.create(:face) do
   defevent :faces, prototype: [Pluggaloid::COLLECT]
@@ -33,9 +49,69 @@ Plugin.create(:face) do
     @faces ||= {}
   end
 
+  # Diva modelから生成されたFace
+  # Model slug => Face slug => Face
+  # @return [Hash{Symbol => Hash{ Symbol => Plugin::Face::Face }}]
+  def model_faces
+    @model_faces ||= {}
+  end
+
+  # Diva modelから生成され、指定されたFaceを継承した固有のFaceを得る
+  # もし固有のFaceが定義されていない場合、一般的なFaceを代替として用いる
+  # @param [Diva::Model] model
+  # @param [Symbol] face
+  # @return [Plugin::Face::Face]
+  def concrete_face_by_model(model, face:)
+    model_faces.dig(model.class.slug, face) || faces[face]
+  end
+
   filter_faces do |f|
     faces.values.each(&f.method(:<<))
     [f]
+  end
+
+  # TODO: 選択中もFaceにしちゃっていいかもしれんがどうだろう
+  # filter_message_selected_bg_color do |model, color|
+  #   color and return [model, color]
+  #   slug = model.class.slug
+  #   color = UserConfig[:"#{slug}_selected_bg"] || UserConfig[:mumble_selected_bg]
+  #   [model, color]
+  # end
+
+  filter_subparts_replyviewer_background_color do |message, color|
+    [message, color || faces[:quoted_reply_to].background]
+  end
+
+  filter_subparts_quote_background_color do |message, color|
+    [message, color || faces[:quoted_message].background]
+  end
+
+  filter_message_font do |message, font|
+    [message, font || concrete_face_by_model(message, face: message.suitable_face).font]
+  end
+
+  filter_message_font_color do |message, color|
+    [message, color || concrete_face_by_model(message, face: message.suitable_face).foreground]
+  end
+
+  filter_message_bg_color do |message, color|
+    [message, color || concrete_face_by_model(message, face: message.suitable_face).background]
+  end
+
+  filter_message_header_left_font do |message, font|
+    [message, font || concrete_face_by_model(message, face: :left_header).font]
+  end
+
+  filter_message_header_left_font_color do |message, color|
+    [message, color || concrete_face_by_model(message, face: :left_header).foreground]
+  end
+
+  filter_message_header_right_font do |message, font|
+    [message, font || concrete_face_by_model(message, face: :right_header).font]
+  end
+
+  filter_message_header_right_font_color do |message, color|
+    [message, color || concrete_face_by_model(message, face: :right_header).foreground]
   end
 
   # 新しいFaceを定義する
@@ -56,17 +132,20 @@ Plugin.create(:face) do
       slug = modelspec[:slug]
       name = modelspec[:name]
 
-      defface(slug, name: _(name), inherit: :basic_message)
-      defface(:"#{slug}_left_header", name: _('%{retriever}のヘッダ（左）') % { retriever: name }, inherit: :left_header)
-      defface(:"#{slug}_right_header", name: _('%{retriever}のヘッダ（右）') % { retriever: name }, inherit: :right_header)
+      faces = {}
+      faces[:basic_message] = defface(slug, name: _(name), inherit: :basic_message)
+      faces[:left_header] = defface(:"#{slug}_left_header", name: _('%{retriever}のヘッダ（左）') % { retriever: name }, inherit: :left_header)
+      faces[:right_header] = defface(:"#{slug}_right_header", name: _('%{retriever}のヘッダ（右）') % { retriever: name }, inherit: :right_header)
 
       if modelspec[:reply]
-        defface(:"#{slug}_mention", name: _('自分宛の%{retriever}') % { retriever: name }, inherit: :mention)
+        faces[:mention] = defface(:"#{slug}_mention", name: _('自分宛の%{retriever}') % { retriever: name }, inherit: :mention)
       end
 
       if modelspec[:myself]
-        defface(:"#{slug}_myself", name: _('自分の%{retriever}') % { retriever: name }, inherit: :myself)
+        faces[:myself] = defface(:"#{slug}_myself", name: _('自分の%{retriever}') % { retriever: name }, inherit: :myself)
       end
+
+      model_faces[slug] = faces
     end
   end
 
