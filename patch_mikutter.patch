@@ -1,0 +1,83 @@
+diff --git a/plugin/set_view/set_view.rb b/plugin/set_view/set_view.rb
+index 384b7fa5..072f7621 100644
+--- a/plugin/set_view/set_view.rb
++++ b/plugin/set_view/set_view.rb
+@@ -11,42 +11,42 @@ Plugin::create(:set_view) do
+     [model, color]
+   end
+ 
+-  filter_message_bg_color do |model, color|
+-    color and return [model, color]
+-    slug = model.class.slug
+-    color = if model.from_me?
+-              UserConfig[:"#{slug}_self_bg"] || UserConfig[:mumble_self_bg]
+-            elsif model.to_me?
+-              UserConfig[:"#{slug}_reply_bg"] || UserConfig[:mumble_reply_bg]
+-            else
+-              UserConfig[:"#{slug}_basic_bg"] || UserConfig[:mumble_basic_bg]
+-            end
+-    [model, color]
+-  end
+-
+-  filter_subparts_replyviewer_background_color do |message, color|
+-    [message, color || UserConfig[:replyviewer_background_color]] end
+-
+-  filter_subparts_quote_background_color do |message, color|
+-    [message, color || UserConfig[:quote_background_color]] end
+-
+-  filter_message_font do |message, font|
+-    [message, font || UserConfig[:"#{message.class.slug}_basic_font"] || UserConfig[:mumble_basic_font]] end
+-
+-  filter_message_font_color do |message, color|
+-    [message, color || UserConfig[:"#{message.class.slug}_basic_color"] || UserConfig[:mumble_basic_color]] end
+-
+-  filter_message_header_left_font do |message, font|
+-    [message, font || UserConfig[:"#{message.class.slug}_basic_left_font"] || UserConfig[:mumble_basic_left_font]] end
+-
+-  filter_message_header_left_font_color do |message, color|
+-    [message, color || UserConfig[:"#{message.class.slug}_basic_left_color"] || UserConfig[:mumble_basic_left_color]] end
+-
+-  filter_message_header_right_font do |message, font|
+-    [message, font || UserConfig[:"#{message.class.slug}_basic_right_font"] || UserConfig[:mumble_basic_right_font]] end
+-
+-  filter_message_header_right_font_color do |message, color|
+-    [message, color || UserConfig[:"#{message.class.slug}_basic_right_color"] || UserConfig[:mumble_basic_right_color]] end
++  # filter_message_bg_color do |model, color|
++  #   color and return [model, color]
++  #   slug = model.class.slug
++  #   color = if model.from_me?
++  #             UserConfig[:"#{slug}_self_bg"] || UserConfig[:mumble_self_bg]
++  #           elsif model.to_me?
++  #             UserConfig[:"#{slug}_reply_bg"] || UserConfig[:mumble_reply_bg]
++  #           else
++  #             UserConfig[:"#{slug}_basic_bg"] || UserConfig[:mumble_basic_bg]
++  #           end
++  #   [model, color]
++  # end
++
++  # filter_subparts_replyviewer_background_color do |message, color|
++  #   [message, color || UserConfig[:replyviewer_background_color]] end
++
++  # filter_subparts_quote_background_color do |message, color|
++  #   [message, color || UserConfig[:quote_background_color]] end
++
++  # filter_message_font do |message, font|
++  #   [message, font || UserConfig[:"#{message.class.slug}_basic_font"] || UserConfig[:mumble_basic_font]] end
++
++  # filter_message_font_color do |message, color|
++  #   [message, color || UserConfig[:"#{message.class.slug}_basic_color"] || UserConfig[:mumble_basic_color]] end
++
++  # filter_message_header_left_font do |message, font|
++  #   [message, font || UserConfig[:"#{message.class.slug}_basic_left_font"] || UserConfig[:mumble_basic_left_font]] end
++
++  # filter_message_header_left_font_color do |message, color|
++  #   [message, color || UserConfig[:"#{message.class.slug}_basic_left_color"] || UserConfig[:mumble_basic_left_color]] end
++
++  # filter_message_header_right_font do |message, font|
++  #   [message, font || UserConfig[:"#{message.class.slug}_basic_right_font"] || UserConfig[:mumble_basic_right_font]] end
++
++  # filter_message_header_right_font_color do |message, color|
++  #   [message, color || UserConfig[:"#{message.class.slug}_basic_right_color"] || UserConfig[:mumble_basic_right_color]] end
+ 
+   settings(_("表示")) do
+     settings _('カスタム絵文字') do
