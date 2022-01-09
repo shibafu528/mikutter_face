@@ -61,7 +61,7 @@ Plugin.create(:face) do
       defface(:"#{slug}_right_header", name: _('%{retriever}のヘッダ（右）') % { retriever: name }, inherit: :right_header)
 
       if modelspec[:reply]
-        defface(:"#{slug}_mention", name: _('自分宛の%{retriever}') % { retriever: name }, inherit: :mentions)
+        defface(:"#{slug}_mention", name: _('自分宛の%{retriever}') % { retriever: name }, inherit: :mention)
       end
 
       if modelspec[:myself]
