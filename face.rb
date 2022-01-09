@@ -173,6 +173,9 @@ Plugin.create(:face_gtk) do
   settings 'Faces' do
     Plugin.collect(:faces).each do |face|
       settings(_(face.name)) do
+        if face.class.superclass != Plugin::Face::Face
+          markup _("未設定の項目には <b><u>%{inherit}</u></b> の設定が使用されます") % { inherit: face.class.superclass.name }
+        end
         font _('フォント'), :"face_#{face.slug}_font"
         color _('前景色'), :"face_#{face.slug}_foreground"
         color _('背景色'), :"face_#{face.slug}_background"
