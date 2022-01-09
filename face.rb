@@ -103,49 +103,49 @@ Plugin.create(:face) do
   end
 
   defface :default,
-          name: 'Default',
+          name: _('標準'),
           inherit: nil,
           font: 'Sans 10',
           foreground: [0, 0, 0],
           background: [0xffff, 0xffff, 0xffff]
 
   defface :basic_message,
-          name: 'Basic Message',
+          name: _('すべての投稿'),
           inherit: :default
 
   defface :mention,
-          name: 'Mention',
+          name: _('自分宛の投稿'),
           inherit: :basic_message,
           background: [0xffff, 0xdede, 0xdede]
 
   defface :myself,
-          name: 'Myself Message',
+          name: _('自分の投稿'),
           inherit: :basic_message,
           background: [0xffff, 0xffff, 0xdede]
 
   defface :quoted_message,
-          name: 'Quoted Message',
+          name: _('引用'),
           inherit: :default,
           font: 'Sans 8'
 
   defface :quoted_reply_to,
-          name: 'Reply To',
+          name: _('リプライ先'),
           inherit: :quoted_message
 
   defface :quoted_shared_message,
-          name: 'Shared Message',
+          name: _('コメント付きシェア'),
           inherit: :quoted_message
 
   defface :header,
-          name: 'Header',
+          name: _('ヘッダ'),
           inherit: :default
 
   defface :left_header,
-          name: 'Left Header',
+          name: _('ヘッダ（左）'),
           inherit: :header
 
   defface :right_header,
-          name: 'Right Header',
+          name: _('ヘッダ（右）'),
           inherit: :header,
           foreground: [0x9999, 0x9999, 0x9999]
 
